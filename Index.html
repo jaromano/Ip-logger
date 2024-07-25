@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Logger</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }
+        #ipInfo { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>IP Logger</h1>
+    <button onclick="getIPInfo()">Get IP Info</button>
+    <div id="ipInfo"></div>
+
+    <script>
+        function getIPInfo() {
+            fetch('https://ipapi.co/json/')
+                .then(response => response.json())
+                .then(data => {
+                    const ipInfo = document.getElementById('ipInfo');
+                    ipInfo.innerHTML = `
+                        <h2>IP Information:</h2>
+                        <p>IP: ${data.ip}</p>
+                        <p>City: ${data.city}</p>
+                        <p>Region: ${data.region}</p>
+                        <p>Country: ${data.country_name}</p>
+                        <p>ISP: ${data.org}</p>
+                    `;
+                    
+                    // Log the access
+                    const logEntry = `${new Date().toISOString()} - IP: ${data.ip}, City: ${data.city}, Country: ${data.country_name}\n`;
+                    console.log('Access logged:', logEntry);
+                    
+                    // In a real application, you would send this data to your server here
+                    // For example:
+                    // fetch('/log-ip', {
+                    //     method: 'POST',
+                    //     headers: { 'Content-Type': 'application/json' },
+                    //     body: JSON.stringify(data)
+                    // });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('ipInfo').innerHTML = 'Error fetching IP information';
+                });
+        }
+    </script>
+</body>
+</html>
